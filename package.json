@@ -1,0 +1,19 @@
+{
+  "name": "monkey_proxy",
+  "version": "1.0.0",
+  "description": "A proxy server that records and replays http requests.",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "author": "David Beck (https://www.davidbeck.co)",
+  "license": "MIT",
+  "dependencies": {
+    "body-parser": "^1.14.2",
+    "express": "^4.13.4",
+    "http-proxy": "^1.13.1",
+    "mkdirp": "^0.5.1"
+  },
+  "bin": {
+    "monkey_proxy": "index.js"
+  }
+}
