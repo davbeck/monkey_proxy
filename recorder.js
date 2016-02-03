@@ -92,7 +92,7 @@ class Recorder {
 		for (let recording of this.recordings) {
 		  if (recording['request']['method'].toUpperCase() === req.method.toUpperCase()
 					&& recording['request']['url'].toLowerCase() === req.url.toLowerCase()) {
-				// this.recordings.splice(this.recordings.indexOf(recording), 1);
+				this.recordings.splice(this.recordings.indexOf(recording), 1);
 
 				return recording
 			}
