@@ -56,9 +56,13 @@ configApp.post('/record', (req, res) => {
 	recorder.path = req.body.path;
 	proxyURL = req.body.host;
 
-	recorder.startRecording();
-
-	res.sendStatus(200);
+	recorder.startRecording((error) => {
+		if (error) {
+			res.sendStatus(500);
+		} else {
+			res.sendStatus(200);
+		}
+	});
 });
 
 // if the path already exists, playback, otherwise record
@@ -67,23 +71,37 @@ configApp.post('/record-if-needed', (req, res) => {
 
 	fs.stat(req.body.path, (err, stat) => {
     if(err == null && stat.isFile()) {
-      recorder.startPlayback();
+      recorder.startPlayback((error) => {
+				if (error) {
+					res.sendStatus(500);
+				} else {
+					res.sendStatus(200);
+				}
+			});
     } else {
 			proxyURL = req.body.host;
 
-			recorder.startRecording();
+			recorder.startRecording((error) => {
+				if (error) {
+					res.sendStatus(500);
+				} else {
+					res.sendStatus(200);
+				}
+			});
 		}
 	});
-
-	res.sendStatus(200);
 });
 
 configApp.post('/playback', (req, res) => {
 	recorder.path = req.body.path;
 
-	recorder.startPlayback();
-
-	res.sendStatus(200);
+	recorder.startPlayback((error) => {
+		if (error) {
+			res.sendStatus(500);
+		} else {
+			res.sendStatus(200);
+		}
+	});
 });
 
 var configServer = configApp.listen(36852, ()  => {

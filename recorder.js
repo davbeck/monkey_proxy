@@ -12,29 +12,34 @@ class Recorder {
 		console.log("Recorder created")
   }
 
-	startRecording() {
+	startRecording(callback) {
 		this.isRecording = true;
 		this.recordings = [];
 
 		mkdirp(path.dirname(this.path), (err) => {
-		  if (err) console.error(err)
-		});
+		  if (err) {
+				console.error(err);
+			} else {
+				console.log(`Recording started at ${this.path} to ${this.host}`);
+			}
 
-		console.log(`Recording started at ${this.path} to ${this.host}`);
+			callback(err);
+		})
 	}
 
-	startPlayback() {
+	startPlayback(callback) {
 		this.isRecording = false;
 
 		fs.readFile(this.path, 'utf8', (err, data) => {
 		  if (err) {
-		    return console.log(err);
-		  }
+		    console.log(err);
+		  } else {
+				this.recordings = JSON.parse(data);
+				console.log(`Playing back from ${this.path} with ${this.recordings.length} recordings`);
+			}
 
-			this.recordings = JSON.parse(data);
+			callback(err);
 		});
-
-		console.log(`Playing back from ${this.path} with ${this.recordings.length}`);
 	}
 
 	//// Recording
