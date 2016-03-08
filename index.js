@@ -61,7 +61,7 @@ configApp.use(bodyParser.json());
 
 configApp.post('/record', (req, res) => {
 	recorder.path = req.body.path;
-	breakPaths = req.body.breakPaths;
+	breakPaths = (req.body.breakPaths === undefined) ? [] : req.body.breakPaths;
 	proxyURL = req.body.host;
 
 	recorder.startRecording((error) => {
@@ -76,7 +76,7 @@ configApp.post('/record', (req, res) => {
 // if the path already exists, playback, otherwise record
 configApp.post('/record-if-needed', (req, res) => {
 	recorder.path = req.body.path;
-	breakPaths = req.body.breakPaths;
+	breakPaths = (req.body.breakPaths === undefined) ? [] : req.body.breakPaths;
 
 	fs.stat(req.body.path, (err, stat) => {
     if(err == null && stat.isFile()) {
@@ -103,7 +103,7 @@ configApp.post('/record-if-needed', (req, res) => {
 
 configApp.post('/playback', (req, res) => {
 	recorder.path = req.body.path;
-	breakPaths = req.body.breakPaths;
+	breakPaths = (req.body.breakPaths === undefined) ? [] : req.body.breakPaths;
 
 	recorder.startPlayback((error) => {
 		if (error) {
