@@ -59,6 +59,7 @@ class Recorder {
 		if (!this.isRecording) {
 			console.log("Trying to record when not in recording mode!");
 			res.writeHead(500, {'X-Monkey-Error':'Trying to record in replay mode'});
+      res.end();
 			return;
 		}
 
@@ -110,6 +111,7 @@ class Recorder {
 		if (this.isRecording) {
 			console.log("Trying to replay when in recording mode!");
 			res.writeHead(500, {'X-Monkey-Error':'Trying to replay in record mode'});
+      res.end();
 			return;
 		}
 

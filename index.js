@@ -15,6 +15,7 @@ let recorder = require('./recorder');
 //
 let proxy = httpProxy.createProxyServer({});
 let proxyURL = "";
+let breakPaths = [];
 
 // To modify the proxy connection before data is sent, you can listen
 // for the 'proxyReq' event. When the event is fired, you will receive
@@ -33,12 +34,18 @@ proxy.on('error', function( error ){
 });
 
 var server = http.createServer((req, res)  => {
-	if (recorder.isRecording) {
+	console.log("req.url", req.url);
+  if (breakPaths.indexOf(req.url) >= 0) {
+	  console.log('Intentionally breaking request with path ' + req.url);
+    res.writeHead(500, {'X-Monkey-Error':'Intentionally breaking request with path ' + req.url});
+    res.end();
+  } else if (recorder.isRecording) {
+		console.log("proxyURL", proxyURL);
 	  proxy.web(req, res, {
 	    target: proxyURL
 	  });
 	} else {
-		recorder.replay(req, res)
+		recorder.replay(req, res);
 	}
 });
 
@@ -54,6 +61,7 @@ configApp.use(bodyParser.json());
 
 configApp.post('/record', (req, res) => {
 	recorder.path = req.body.path;
+	breakPaths = req.body.breakPaths;
 	proxyURL = req.body.host;
 
 	recorder.startRecording((error) => {
@@ -68,6 +76,7 @@ configApp.post('/record', (req, res) => {
 // if the path already exists, playback, otherwise record
 configApp.post('/record-if-needed', (req, res) => {
 	recorder.path = req.body.path;
+	breakPaths = req.body.breakPaths;
 
 	fs.stat(req.body.path, (err, stat) => {
     if(err == null && stat.isFile()) {
@@ -94,6 +103,7 @@ configApp.post('/record-if-needed', (req, res) => {
 
 configApp.post('/playback', (req, res) => {
 	recorder.path = req.body.path;
+	breakPaths = req.body.breakPaths;
 
 	recorder.startPlayback((error) => {
 		if (error) {
